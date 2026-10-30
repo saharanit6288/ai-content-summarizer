@@ -1,6 +1,7 @@
-const express = require("express");
-const cors = require("cors");
-const helmet = require("helmet");
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
+import { prisma } from "./config/prisma.js";
 
 const app = express();
 
@@ -22,4 +23,22 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-module.exports = app;
+app.get("/api/db-health", async (req, res) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+
+    res.status(200).json({
+      success: true,
+      message: "PostgreSQL connection successful"
+    });
+  } catch (error) {
+    console.error("Database health check failed:", error.message);
+
+    res.status(503).json({
+      success: false,
+      message: "Database connection failed"
+    });
+  }
+});
+
+export default app;
