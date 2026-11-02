@@ -5,7 +5,7 @@ export const createSummarySchema = z.object({
     .string()
     .trim()
     .min(100, "Input must contain at least 100 characters")
-    .max(50000, "Input must not exceed 50,000 characters"),
+    .max(100000, "Input must not exceed 100,000 characters"),
 
   wordLimit: z
     .number()

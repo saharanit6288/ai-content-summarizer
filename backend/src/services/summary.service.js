@@ -1,13 +1,19 @@
 import { prisma } from "../config/prisma.js";
 import { generateSummary } from "./ollama.service.js";
 
-export async function createSummary(userId, inputText, wordLimit) {
+export async function createSummary(
+  userId, 
+  inputText, 
+  wordLimit,
+  sourceType = "TEXT",
+  sourceUrl = null) {
   const aiResult = await generateSummary(inputText, wordLimit);
 
   const savedSummary = await prisma.summary.create({
     data: {
       userId,
-      sourceType: "TEXT",
+      sourceType,
+      sourceUrl,
       inputText,
       requestedWordLimit: wordLimit,
       summaryText: aiResult.summaryText,

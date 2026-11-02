@@ -30,6 +30,7 @@ model Summary {
   id                String        @id @default(cuid())
   userId            String
   sourceType        String        @default("TEXT")
+  sourceUrl         String?       @db.Text
   inputText         String        @db.Text
   requestedWordLimit Int
   summaryText       String?       @db.Text
