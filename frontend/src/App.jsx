@@ -8,13 +8,11 @@ import AppLayout from "./components/layout/AppLayout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
-// import Summarize from "./pages/Summarize";
+import Summarize from "./pages/Summarize";
+import SummarizeUrl from "./pages/SummarizeUrl";
+import SummarizeFile from "./pages/SummarizeFile";
 // import SummaryHistory from "./pages/SummaryHistory";
 // import SummaryDetails from "./pages/SummaryDetails";
-
-function Summarize() {
-  return <h1>Summarize - Coming soon</h1>;
-}
 
 function SummaryHistory() {
   return <h1>Summary History - Coming soon</h1>;
@@ -37,6 +35,8 @@ export default function App() {
             <Route element={<AppLayout />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/summarize" element={<Summarize />} />
+              <Route path="/summarizebyurl" element={<SummarizeUrl />} />
+              <Route path="/summarizebyfile" element={<SummarizeFile />} />
               <Route path="/history" element={<SummaryHistory />} />
               <Route path="/history/:id" element={<SummaryDetails />} />
             </Route>

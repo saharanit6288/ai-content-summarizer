@@ -29,6 +29,8 @@ export default function AppLayout() {
           <nav>
             <NavLink to="/dashboard">Dashboard</NavLink>
             <NavLink to="/summarize">Summarize</NavLink>
+            <NavLink to="/summarizebyurl">Summarize Website</NavLink>
+            <NavLink to="/summarizebyfile">Upload Document</NavLink>
             <NavLink to="/history">Summary History</NavLink>
           </nav>
         </aside>
