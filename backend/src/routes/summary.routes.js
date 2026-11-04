@@ -5,6 +5,11 @@ import {
 } from "../controllers/summary.controller.js";
 import { uploadSingleDocument } from "../middleware/file-upload.middleware.js";
 import { createSummaryFromFileController } from "../controllers/file-summary.controller.js";
+import {
+  getSummaryHistoryController,
+  getSummaryByIdController,
+  deleteSummaryController
+} from "../controllers/summary-history.controller.js";
 
 const router = Router();
 
@@ -26,5 +31,14 @@ router.post(
   uploadSingleDocument,
   createSummaryFromFileController
 );
+
+// Summary history
+router.get("/", authenticateToken, getSummaryHistoryController);
+
+// Individual summary
+router.get("/:id", authenticateToken, getSummaryByIdController);
+
+// Delete summary
+router.delete("/:id", authenticateToken, deleteSummaryController);
 
 export default router;
