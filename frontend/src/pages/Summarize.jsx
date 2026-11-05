@@ -1,6 +1,9 @@
 
 import { useState } from "react";
 import { createTextSummary } from "../api/summary.api";
+import { getApiErrorMessage } from "../utils/api-error";
+import FeedbackMessage from "../components/common/FeedbackMessage";
+import Loading from "../components/common/Loading";
 
 export default function Summarize() {
   const [inputText, setInputText] = useState("");
@@ -54,13 +57,7 @@ export default function Summarize() {
       setSummaryText(generatedSummary);
       setSuccessMessage("Your summary was generated successfully.");
     } catch (err) {
-      const message =
-        err.response?.data?.message ||
-        err.response?.data?.error ||
-        err.message ||
-        "Unable to generate summary. Please try again.";
-
-      setError(message);
+      setError(getApiErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -69,6 +66,7 @@ export default function Summarize() {
   function handleClear() {
     setInputText("");
     setSummaryText("");
+    setSuccessMessage("");
     setError("");
     setSuccessMessage("");
   }
@@ -118,9 +116,11 @@ export default function Summarize() {
         </div>
 
         {error && (
-          <div className="error-message" role="alert">
-            {error}
-          </div>
+          <FeedbackMessage
+            type="error"
+            message={error}
+            onClose={() => setError("")}
+          />
         )}
 
         <div className="form-actions">
@@ -142,10 +142,8 @@ export default function Summarize() {
         </div>
 
         {loading && (
-          <p className="loading-message">
-            Your content is being processed by the AI model. This may take a
-            little time.
-          </p>
+          <Loading message="Your content is being processed by the AI model. This may take a
+            little time." />
         )}
       </form>
 
@@ -157,7 +155,11 @@ export default function Summarize() {
           </div>
 
           {successMessage && (
-            <p className="success-message">{successMessage}</p>
+            <FeedbackMessage
+              type="success"
+              message={successMessage}
+              onClose={() => setSuccessMessage("")}
+            />
           )}
 
           <div className="summary-output">

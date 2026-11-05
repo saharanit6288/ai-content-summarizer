@@ -2,6 +2,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getSummaryHistory } from "../api/summary.api";
+import Loading from "../components/common/Loading";
+import EmptyState from "../components/common/EmptyState";
+import { getApiErrorMessage } from "../utils/api-error";
 
 const PAGE_SIZE = 3;
 
@@ -89,12 +92,7 @@ export default function SummaryHistory() {
         setTotal(0);
         setTotalPages(1);
 
-        setError(
-          err.response?.data?.message ||
-          err.response?.data?.error ||
-          err.message ||
-          "Unable to load summary history."
-        );
+        setError(getApiErrorMessage(err));
       } finally {
         if (isActive) setLoading(false);
       }
@@ -176,17 +174,14 @@ export default function SummaryHistory() {
       )}
 
       {loading ? (
-        <p className="history-message">Loading your summaries...</p>
+        <Loading message="Loading summary history..." />
       ) : summaries.length === 0 ? (
-        <section className="history-empty">
-          <h2>No summaries found</h2>
-          <p>
-            You haven't generated any summaries matching these filters.
-          </p>
-          <Link to="/summarize" className="primary-link">
-            Create a summary
-          </Link>
-        </section>
+        <EmptyState
+          title="No summaries found"
+          message="Create your first summary or change your filters."
+          actionLabel="Create Summary"
+          actionTo="/summarize"
+        />
       ) : (
         <>
           <div className="history-count">

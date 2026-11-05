@@ -4,6 +4,8 @@ import {
   getSummaryById,
   deleteSummary,
 } from "../api/summary.api";
+import Loading from "../components/common/Loading";
+import { getApiErrorMessage } from "../utils/api-error";
 
 function formatDate(dateValue) {
   if (!dateValue) return "Not available";
@@ -39,11 +41,7 @@ export default function SummaryDetails() {
 
         setSummary(record);
       } catch (err) {
-        setError(
-          err.response?.data?.message ||
-            err.message ||
-            "Unable to load summary."
-        );
+        setError(getApiErrorMessage(err));
       } finally {
         setLoading(false);
       }
@@ -79,7 +77,7 @@ export default function SummaryDetails() {
   }
 
   if (loading) {
-    return <div className="page-container">Loading summary...</div>;
+    return <Loading message="Loading summary..." />;
   }
 
   if (error && !summary) {

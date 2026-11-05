@@ -1,6 +1,9 @@
 
 import { useState } from "react";
 import { createUrlSummary } from "../api/summary.api";
+import Loading from "../components/common/Loading";
+import { getApiErrorMessage } from "../utils/api-error";
+import FeedbackMessage from "../components/common/FeedbackMessage";
 
 export default function SummarizeUrl() {
   const [url, setUrl] = useState("");
@@ -9,12 +12,14 @@ export default function SummarizeUrl() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [sourceUrl, setSourceUrl] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   async function handleSubmit(event) {
     event.preventDefault();
 
     setError("");
     setSummaryText("");
+    setSuccessMessage("");
     setSourceUrl("");
 
     const trimmedUrl = url.trim();
@@ -67,19 +72,14 @@ export default function SummarizeUrl() {
       }
 
       setSummaryText(generatedSummary);
+      setSuccessMessage("Your summary was generated successfully.");
       setSourceUrl(
         payload?.sourceUrl ??
         payload?.summary?.sourceUrl ??
         trimmedUrl
       );
     } catch (err) {
-      const message =
-        err.response?.data?.message ||
-        err.response?.data?.error ||
-        err.message ||
-        "Unable to summarize this website. Please try another URL.";
-
-      setError(message);
+      setError(getApiErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -87,7 +87,8 @@ export default function SummarizeUrl() {
 
   function handleClear() {
     setUrl("");
-    setSummaryText("");
+    setSummaryText("");    
+    setSuccessMessage("");
     setSourceUrl("");
     setError("");
   }
@@ -138,9 +139,11 @@ export default function SummarizeUrl() {
         </div>
 
         {error && (
-          <div className="error-message" role="alert">
-            {error}
-          </div>
+          <FeedbackMessage
+            type="error"
+            message={error}
+            onClose={() => setError("")}
+          />
         )}
 
         <div className="form-actions">
@@ -162,10 +165,8 @@ export default function SummarizeUrl() {
         </div>
 
         {loading && (
-          <p className="loading-message">
-            Fetching the webpage, extracting its article, and generating your
-            summary. This may take a little time.
-          </p>
+          <Loading message="Fetching the webpage, extracting its article, and generating your
+            summary. This may take a little time." />
         )}
       </form>
 
@@ -175,6 +176,14 @@ export default function SummarizeUrl() {
             <h2>Generated Summary</h2>
             <span className="success-label">Completed</span>
           </div>
+
+          {successMessage && (
+            <FeedbackMessage
+              type="success"
+              message={successMessage}
+              onClose={() => setSuccessMessage("")}
+            />
+          )}
 
           {sourceUrl && (
             <p className="source-url">

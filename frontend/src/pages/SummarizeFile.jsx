@@ -1,6 +1,9 @@
 
 import { useRef, useState } from "react";
 import { createFileSummary } from "../api/summary.api";
+import { getApiErrorMessage } from "../utils/api-error";
+import FeedbackMessage from "../components/common/FeedbackMessage";
+import Loading from "../components/common/Loading";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 
@@ -13,13 +16,15 @@ export default function SummarizeFile() {
   const [sourceType, setSourceType] = useState("");
   const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [error, setError] = useState("");
+  const [error, setError] = useState("");  
+  const [successMessage, setSuccessMessage] = useState("");
 
   function handleFileChange(event) {
     const selectedFile = event.target.files?.[0];
 
     setError("");
-    setSummaryText("");
+    setSummaryText("");    
+    setSuccessMessage("");
     setSourceType("");
 
     if (!selectedFile) {
@@ -58,6 +63,7 @@ export default function SummarizeFile() {
 
     setError("");
     setSummaryText("");
+    setSuccessMessage("Your summary was generated successfully.");
     setSourceType("");
     setUploadProgress(0);
 
@@ -118,13 +124,7 @@ export default function SummarizeFile() {
         ""
       );
     } catch (err) {
-      const message =
-        err.response?.data?.message ||
-        err.response?.data?.error ||
-        err.message ||
-        "Unable to summarize this document. Please try again.";
-
-      setError(message);
+      setError(getApiErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -132,7 +132,8 @@ export default function SummarizeFile() {
 
   function handleClear() {
     setFile(null);
-    setSummaryText("");
+    setSummaryText("");    
+    setSuccessMessage("");
     setSourceType("");
     setError("");
     setUploadProgress(0);
@@ -194,9 +195,11 @@ export default function SummarizeFile() {
         </div>
 
         {error && (
-          <div className="error-message" role="alert">
-            {error}
-          </div>
+          <FeedbackMessage
+            type="error"
+            message={error}
+            onClose={() => setError("")}
+          />
         )}
 
         <div className="form-actions">
@@ -219,7 +222,7 @@ export default function SummarizeFile() {
             <p>
               {uploadProgress < 100
                 ? `Uploading document: ${uploadProgress}%`
-                : "Upload complete. Generating your AI summary..."}
+                : <Loading message="Upload complete. Generating your AI summary..." />}
             </p>
 
             <progress value={uploadProgress} max="100" />
@@ -233,6 +236,14 @@ export default function SummarizeFile() {
             <h2>Generated Summary</h2>
             <span className="success-label">Completed</span>
           </div>
+
+          {successMessage && (
+            <FeedbackMessage
+              type="success"
+              message={successMessage}
+              onClose={() => setSuccessMessage("")}
+            />
+          )}
 
           {sourceType && (
             <p className="result-footer">Document type: {sourceType}</p>

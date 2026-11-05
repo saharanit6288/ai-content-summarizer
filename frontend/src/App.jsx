@@ -26,8 +26,8 @@ export default function App() {
             <Route element={<AppLayout />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/summarize" element={<Summarize />} />
-              <Route path="/summarizebyurl" element={<SummarizeUrl />} />
-              <Route path="/summarizebyfile" element={<SummarizeFile />} />
+              <Route path="/summarize/url" element={<SummarizeUrl />} />
+              <Route path="/summarize/file" element={<SummarizeFile />} />
               <Route path="/history" element={<SummaryHistory />} />
               <Route path="/history/:id" element={<SummaryDetails />} />
             </Route>

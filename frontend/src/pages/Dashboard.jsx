@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getSummaryStats } from "../api/summary.api";
+import Loading from "../components/common/Loading";
+import EmptyState from "../components/common/EmptyState";
+import { getApiErrorMessage } from "../utils/api-error";
 
 function formatDate(dateValue) {
   if (!dateValue) return "Not available";
@@ -36,10 +39,7 @@ export default function Dashboard() {
 
         setStats(data);
       } catch (err) {
-        setError(
-          err.response?.data?.message ||
-            "Unable to load dashboard statistics."
-        );
+        setError(getApiErrorMessage(err));
       } finally {
         setLoading(false);
       }
@@ -49,11 +49,7 @@ export default function Dashboard() {
   }, []);
 
   if (loading) {
-    return (
-      <div className="dashboard-container">
-        <p>Loading dashboard...</p>
-      </div>
-    );
+    return <Loading message="Loading dashboard..." />;
   }
 
   if (error) {
@@ -154,10 +150,12 @@ export default function Dashboard() {
         </div>
 
         {recentSummaries.length === 0 ? (
-          <div className="dashboard-empty">
-            <p>You haven't created any summaries yet.</p>
-            <Link to="/summarize">Create your first summary</Link>
-          </div>
+          <EmptyState
+            title="No summaries found"
+            message="You haven't created any summaries yet."
+            actionLabel="Create your first summary"
+            actionTo="/summarize"
+          />
         ) : (
           <div className="dashboard-recent-list">
             {recentSummaries.map((summary) => (

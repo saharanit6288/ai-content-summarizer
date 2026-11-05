@@ -1,6 +1,7 @@
-
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import Navbar from "./Navbar";
+import Sidebar from "./Sidebar";
 
 export default function AppLayout() {
   const { user, logout } = useAuth();
@@ -13,28 +14,10 @@ export default function AppLayout() {
 
   return (
     <div className="app-layout">
-      <header className="topbar">
-        <div className="brand">AI Content Summarizer</div>
-
-        <div className="user-section">
-          <span>{user?.email || "User"}</span>
-          <button onClick={handleLogout} className="logout-button">
-            Logout
-          </button>
-        </div>
-      </header>
+      <Navbar user={user} onLogout={handleLogout} />
 
       <div className="main-layout">
-        <aside className="sidebar">
-          <nav>
-            <NavLink to="/dashboard">Dashboard</NavLink>
-            <NavLink to="/summarize">Summarize</NavLink>
-            <NavLink to="/summarizebyurl">Summarize Website</NavLink>
-            <NavLink to="/summarizebyfile">Upload Document</NavLink>
-            <NavLink to="/history">Summary History</NavLink>
-          </nav>
-        </aside>
-
+        <Sidebar />
         <main className="page-content">
           <Outlet />
         </main>
