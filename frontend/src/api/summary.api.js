@@ -20,3 +20,23 @@ export async function createFileSummary(formData, onUploadProgress) {
 
   return response.data;
 }
+
+export async function getSummaryHistory(params = {}) {
+  const response = await api.get("/summaries", { params });
+  return response.data;
+}
+
+export async function getSummaryById(id) {
+  const response = await api.get(`/summaries/${id}`);
+  return response.data;
+}
+
+export async function deleteSummary(id) {
+  const response = await api.delete(`/summaries/${id}`);
+  return response.data;
+}
+
+export async function getSummaryStats() {
+  const response = await api.get("/summaries/stats");
+  return response.data;
+}

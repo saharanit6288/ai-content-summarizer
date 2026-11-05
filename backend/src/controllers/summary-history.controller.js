@@ -171,3 +171,81 @@ export async function deleteSummaryController(req, res) {
     });
   }
 }
+
+export async function getSummaryStatsController(req, res, next) {
+  try {
+    const userId = req.user.id;
+
+    const [
+      totalSummaries,
+      completedSummaries,
+      failedSummaries,
+      sourceTypeCounts,
+      recentSummaries,
+    ] = await Promise.all([
+      prisma.summary.count({
+        where: { userId },
+      }),
+
+      prisma.summary.count({
+        where: {
+          userId,
+          status: "COMPLETED",
+        },
+      }),
+
+      prisma.summary.count({
+        where: {
+          userId,
+          status: "FAILED",
+        },
+      }),
+
+      prisma.summary.groupBy({
+        by: ["sourceType"],
+        where: { userId },
+        _count: {
+          _all: true,
+        },
+      }),
+
+      prisma.summary.findMany({
+        where: { userId },
+        orderBy: { createdAt: "desc" },
+        take: 5,
+        select: {
+          id: true,
+          sourceType: true,
+          sourceUrl: true,
+          requestedWordLimit: true,
+          summaryText: true,
+          status: true,
+          createdAt: true,
+        },
+      }),
+    ]);
+
+    const sourceCounts = Object.fromEntries(
+      sourceTypeCounts.map((item) => [
+        item.sourceType,
+        item._count._all,
+      ])
+    );
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        totalSummaries,
+        completedSummaries,
+        failedSummaries,
+        textSummaries: sourceCounts.TEXT || 0,
+        urlSummaries: sourceCounts.URL || 0,
+        pdfSummaries: sourceCounts.PDF || 0,
+        docxSummaries: sourceCounts.DOCX || 0,
+        recentSummaries,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+}

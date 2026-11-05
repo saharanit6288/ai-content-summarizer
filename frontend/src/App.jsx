@@ -11,17 +11,8 @@ import Dashboard from "./pages/Dashboard";
 import Summarize from "./pages/Summarize";
 import SummarizeUrl from "./pages/SummarizeUrl";
 import SummarizeFile from "./pages/SummarizeFile";
-// import SummaryHistory from "./pages/SummaryHistory";
-// import SummaryDetails from "./pages/SummaryDetails";
-
-function SummaryHistory() {
-  return <h1>Summary History - Coming soon</h1>;
-}
-
-function SummaryDetails() {
-  return <h1>Summary Details - Coming soon</h1>;
-}
-
+import SummaryHistory from "./pages/SummaryHistory";
+import SummaryDetails from "./pages/SummaryDetails";
 
 export default function App() {
   return (

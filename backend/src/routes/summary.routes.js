@@ -8,7 +8,8 @@ import { createSummaryFromFileController } from "../controllers/file-summary.con
 import {
   getSummaryHistoryController,
   getSummaryByIdController,
-  deleteSummaryController
+  deleteSummaryController,
+  getSummaryStatsController
 } from "../controllers/summary-history.controller.js";
 
 const router = Router();
@@ -34,6 +35,8 @@ router.post(
 
 // Summary history
 router.get("/", authenticateToken, getSummaryHistoryController);
+
+router.get("/stats", authenticateToken, getSummaryStatsController);
 
 // Individual summary
 router.get("/:id", authenticateToken, getSummaryByIdController);
