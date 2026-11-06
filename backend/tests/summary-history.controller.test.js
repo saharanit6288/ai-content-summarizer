@@ -112,13 +112,14 @@ describe("Summary history controller", () => {
     };
 
     const res = createResponse();
+    const next = vi.fn();
 
     prisma.summary.findFirst.mockResolvedValue({
       id: "summary-1",
       userId: "user-123"
     });
 
-    await getSummaryByIdController(req, res);
+    await getSummaryByIdController(req, res, next);
 
     expect(prisma.summary.findFirst).toHaveBeenCalledWith({
       where: {
@@ -140,12 +141,19 @@ describe("Summary history controller", () => {
     };
 
     const res = createResponse();
+    const next = vi.fn();
 
     prisma.summary.findFirst.mockResolvedValue(null);
 
-    await getSummaryByIdController(req, res);
+    await getSummaryByIdController(req, res, next);
 
-    expect(res.status).toHaveBeenCalledWith(404);
+    //expect(res.status).toHaveBeenCalledWith(404);
+    expect(next).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: "Summary not found",
+        statusCode: 404,
+      })
+    );
   });
 
   it("deletes only the authenticated user's summary", async () => {
@@ -155,10 +163,11 @@ describe("Summary history controller", () => {
     };
 
     const res = createResponse();
+    const next = vi.fn();
 
     prisma.summary.deleteMany.mockResolvedValue({ count: 1 });
 
-    await deleteSummaryController(req, res);
+    await deleteSummaryController(req, res, next);
 
     expect(prisma.summary.deleteMany).toHaveBeenCalledWith({
       where: {
@@ -177,11 +186,18 @@ describe("Summary history controller", () => {
     };
 
     const res = createResponse();
+    const next = vi.fn();
 
     prisma.summary.deleteMany.mockResolvedValue({ count: 0 });
 
-    await deleteSummaryController(req, res);
+    await deleteSummaryController(req, res, next);
 
-    expect(res.status).toHaveBeenCalledWith(404);
+    // expect(res.status).toHaveBeenCalledWith(404);
+    expect(next).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: "Summary not found",
+        statusCode: 404,
+      })
+    );
   });
 });

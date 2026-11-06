@@ -11,23 +11,31 @@ import {
   deleteSummaryController,
   getSummaryStatsController
 } from "../controllers/summary-history.controller.js";
+import {
+  textSummaryLimiter,
+  websiteSummaryLimiter,
+  fileUploadLimiter,
+} from "../middleware/rate-limit.middleware.js";
 
 const router = Router();
 
 router.post(
   "/",
+  textSummaryLimiter,
   authenticateToken,
   createSummaryController
 );
 
 router.post(
   "/from-url",
+  websiteSummaryLimiter,
   authenticateToken,
   createSummaryFromUrlController
 );
 
 router.post(
   "/from-file",
+  fileUploadLimiter,
   authenticateToken,
   uploadSingleDocument,
   createSummaryFromFileController

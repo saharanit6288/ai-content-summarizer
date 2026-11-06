@@ -7,11 +7,15 @@ import {
   authenticateToken
 } from "../middleware/auth.middleware.js";
 import { prisma } from "../config/prisma.js";
+import {
+  authLimiter,
+  registerLimiter,
+} from "../middleware/rate-limit.middleware.js";
 
 const router = Router();
 
-router.post("/register", register);
-router.post("/login", login);
+router.post("/register", registerLimiter, register);
+router.post("/login", authLimiter, login);
 
 router.get("/me", authenticateToken, async (req, res) => {
   try {

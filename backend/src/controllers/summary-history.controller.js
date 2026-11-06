@@ -5,6 +5,7 @@ import {
   summaryHistoryQuerySchema,
   summaryIdSchema
 } from "../validators/summary-history.validator.js";
+import { AppError } from "../utils/app-error.js";
 
 // GET /api/summaries
 export async function getSummaryHistoryController(req, res) {
@@ -89,7 +90,7 @@ export async function getSummaryHistoryController(req, res) {
 }
 
 // GET /api/summaries/:id
-export async function getSummaryByIdController(req, res) {
+export async function getSummaryByIdController(req, res, next) {
   try {
     const validation = summaryIdSchema.safeParse(req.params);
 
@@ -111,10 +112,7 @@ export async function getSummaryByIdController(req, res) {
     });
 
     if (!summary) {
-      return res.status(404).json({
-        success: false,
-        message: "Summary not found."
-      });
+      throw new AppError("Summary not found", 404);
     }
 
     return res.status(200).json({
@@ -123,16 +121,12 @@ export async function getSummaryByIdController(req, res) {
     });
   } catch (error) {
     console.error("Get summary by ID failed:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Unable to retrieve summary."
-    });
+    next(error);
   }
 }
 
 // DELETE /api/summaries/:id
-export async function deleteSummaryController(req, res) {
+export async function deleteSummaryController(req, res, next) {
   try {
     const validation = summaryIdSchema.safeParse(req.params);
 
@@ -152,10 +146,7 @@ export async function deleteSummaryController(req, res) {
     });
 
     if (result.count === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "Summary not found."
-      });
+      throw new AppError("Summary not found", 404);
     }
 
     return res.status(200).json({
@@ -164,11 +155,7 @@ export async function deleteSummaryController(req, res) {
     });
   } catch (error) {
     console.error("Delete summary failed:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Unable to delete summary."
-    });
+    next(error);
   }
 }
 
