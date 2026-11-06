@@ -132,7 +132,24 @@ See the Docker setup instructions for environment configuration and startup comm
 
 Development and testing in progress.
 
-## License
+## Applicatio Screenshots
 
-MIT (add a LICENSE file before claiming this project is MIT licensed).
-```
+![Register](./screenshots/image.png)
+
+![Login](./screenshots/image-1.png)
+
+![Dashboard](./screenshots/image-9.png)
+
+![Summarize-Text](./screenshots/image-3.png)
+
+![Summarize-Url](./screenshots/image-4.png)
+
+![Summarize-Upload](./screenshots/image-5.png)
+
+![Summarize-History](./screenshots/image-6.png)
+
+![Summarize-Details](./screenshots/image-7.png)
+
+![Delete-Summary](./screenshots/image-8.png)
+
+
