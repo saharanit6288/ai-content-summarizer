@@ -1,9 +1,42 @@
+# Dependencies
 node_modules/
+**/node_modules/
+
+# Environment variables and secrets
 .env
-**/.env
+.env.*
+!.env.example
+!.env.docker.example
+
+# Logs
+logs/
+**/logs/
+*.log
+
+# Build output
+frontend/dist/
+backend/dist/
 coverage/
+**/coverage/
+
+# Generated Prisma client (regenerate during setup/build)
+backend/src/generated/prisma/
+
+# Temporary files
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Local uploads
 uploads/
-backend/generated/
+
+# other
 .agents
 .claude
 .windsurf
+
